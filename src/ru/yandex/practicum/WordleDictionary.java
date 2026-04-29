@@ -15,6 +15,8 @@ public class WordleDictionary {
 
     private final Random random = new Random();
 
+    public static final int perfectLength = 5;
+
 
     public void loadWords(List<String> rawWords) {
         this.words = new ArrayList<>();
@@ -28,65 +30,22 @@ public class WordleDictionary {
 
 
     private boolean isSuitableForGame(String word) {
-        return word.length() == 5;
+        return word.length() == perfectLength;
     }
 
-    public String getRandomWord() {
+    public String getRandomWord() throws DictionaryIsEmptyException {
         if (words.isEmpty()) {
-            throw new RuntimeException("Словарь пуст");
+            throw new DictionaryIsEmptyException("Словарь пуст");
         }
         return words.get(random.nextInt(words.size()));
     }
 
-//    public List<String> filterWords(String knownLetters, String correctPositions, String excludedLetters) {
-//        List<String> filteredWords = new ArrayList<>();
-//        for (String word : words) {
-//            if (matchesCriteria(word, knownLetters, correctPositions, excludedLetters)) {
-//                filteredWords.add(word);
-//            }
-//        }
-//        return filteredWords;
-//    }
+
 
     public List<String> getWords() {
         return words;
     }
 
-//    private boolean matchesCriteria(String word, String knownLetters, String correctPositions, String excludedLetters) {
-//        // 1. Проверяем длину слова
-//        if (word.length() != 5) {
-//            return false;
-//        }
-//
-//        // 2. Проверяем исключённые буквы
-//        for (char c : excludedLetters.toCharArray()) {
-//            if (word.contains(String.valueOf(c))) {
-//                return false; // Если буква из excluded есть в слове — не подходит
-//            }
-//        }
-//
-//        // 3. Проверяем правильные позиции (символ +)
-//        for (int i = 0; i < correctPositions.length(); i++) {
-//            char hintChar = correctPositions.charAt(i);
-//            if (hintChar == '+') {
-//                char wordChar = word.charAt(i); // Буква в слове на этой позиции
-//                // Если в подсказке +, но буква не совпадает — слово не подходит
-//                if (wordChar != knownLetters.charAt(i)) {
-//                    return false;
-//                }
-//            }
-//        }
-//
-//        // 4. Проверяем известные буквы (которые есть в слове, но позиция не известна)
-//        for (char c : knownLetters.toCharArray()) {
-//            if (c != '-' && !word.contains(String.valueOf(c))) {
-//                return false; // Если известная буква отсутствует в слове — не подходит
-//            }
-//        }
-//
-//        // Если все проверки пройдены — слово подходит
-//        return true;
-//    }
 
     public boolean contains(String guess) {
         return words.contains(guess);

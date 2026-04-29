@@ -16,15 +16,15 @@ import java.util.Scanner;
 
 public class Wordle {
 
-    public static void main(String[] args) {
+    public static void main(String[] args)  {
         // 1. Создаём лог‑файл — он будет передаваться во все классы
         FileWriter logFile;
         try {
             logFile = new FileWriter("wordle_game.log");
             log(logFile, "Игра Wordle запущена");
         } catch (IOException e) {
-            System.err.println("Не удалось создать лог‑файл: " + e.getMessage());
-            return; // Завершаем программу, если не смогли создать лог
+            throw new LogFileCreatingException("Не удалось создать лог‑файл: " + e.getMessage());
+            // Завершаем программу, если не смогли создать лог
         }
 
         // 2. Создаём загрузчик словарей
@@ -60,7 +60,11 @@ public class Wordle {
             log(logFile, "игрок ввел слово: " + playerInput);
             if (playerInput.isEmpty()) {
                 log(logFile,"пользователь ввел пустую строку, сгенерирована подсказка");
-                System.out.println("Возможно подойдет слово: " + game.generateHintWord());
+                try {
+                    System.out.println("Возможно подойдет слово: " + game.generateHintWord());
+                } catch (NoSuitableWordsException e) {
+                    throw new RuntimeException(e);
+                }
 
             } else {
 
@@ -83,7 +87,7 @@ public class Wordle {
 
                     gameFinished = gameResult || game.getAttemptsLeft() == 0; // Игра завершена, если игрок выиграл или проиграл
 
-                } catch (RuntimeException e) {
+                } catch (Exception e) {
                     // Обрабатываем игровые ошибки (например, некорректный ввод)
                     System.out.println("Ошибка: " + e.getMessage());
                     log(logFile, "Ошибка ввода: " + e.getMessage());

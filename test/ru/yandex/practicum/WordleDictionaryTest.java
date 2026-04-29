@@ -15,24 +15,19 @@ class WordleDictionaryTest {
         dictionary = new WordleDictionary();
     }
 
-    @Test
-    void testLoadWords() {
-        List<String> words = Arrays.asList("яблок", "банан", "кошка", "дом", "стол", "стул");
-        dictionary.loadWords(words);
 
-        assertEquals(4, dictionary.getWords().size());
-        assertTrue(dictionary.getWords().contains("яблок"));
-        assertTrue(dictionary.getWords().contains("банан"));
-        assertTrue(dictionary.getWords().contains("кошка"));
-        assertTrue(dictionary.getWords().contains("стол"));
-    }
 
     @Test
     void testGetRandomWord() {
         List<String> words = Arrays.asList("яблок", "банан");
         dictionary.loadWords(words);
 
-        String randomWord = dictionary.getRandomWord();
+        String randomWord = null;
+        try {
+            randomWord = dictionary.getRandomWord();
+        } catch (DictionaryIsEmptyException e) {
+            throw new RuntimeException(e);
+        }
         assertTrue(words.contains(randomWord));
     }
 

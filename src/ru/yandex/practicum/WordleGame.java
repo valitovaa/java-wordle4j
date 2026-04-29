@@ -31,7 +31,11 @@ public class WordleGame {
 
     public WordleGame(WordleDictionary dictionary, FileWriter logFile) {
         this.dictionary = dictionary;
-        this.answer = dictionary.getRandomWord();
+        try {
+            this.answer = dictionary.getRandomWord();
+        } catch (DictionaryIsEmptyException e) {
+            throw new RuntimeException(e);
+        }
         this.attemptsLeft = 6;
         this.guessHistory = new ArrayList<>();
         this.logfile = logFile;
@@ -40,9 +44,9 @@ public class WordleGame {
     }
 
     // Метод для обработки хода игрока
-    public boolean makeGuess(String guess) {
+    public boolean makeGuess(String guess) throws IncorrectInputException {
         if (guess.length() != 5 || !dictionary.contains(guess)) {
-            throw new IllegalArgumentException("Слово должно быть из пяти букв и присутствовать в словаре.");
+            throw new IncorrectInputException("Слово должно быть из пяти букв и присутствовать в словаре.");
         }
 
         attemptsLeft--;
@@ -83,7 +87,7 @@ public class WordleGame {
     }
 
 
-    public String generateHintWord() {
+    public String generateHintWord() throws NoSuitableWordsException {
         List<String> filteredWords = new ArrayList<>(dictionary.getWords()); // Копируем весь словарь
 
         // Проходим по истории и фильтруем слова по каждой подсказке
@@ -94,7 +98,7 @@ public class WordleGame {
         }
 
         if (filteredWords.isEmpty()) {
-            throw new IllegalStateException("Не удалось найти подходящие слова!");
+            throw new NoSuitableWordsException("Не удалось найти подходящие слова!");
         }
 
         Random random = new Random();
